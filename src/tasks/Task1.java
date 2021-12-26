@@ -3,7 +3,7 @@ package tasks;
 import common.Person;
 import common.PersonService;
 import common.Task;
-
+import java.util.Map;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,11 +20,25 @@ import java.util.stream.Collectors;
 public class Task1 implements Task {
 
   // !!! Редактируйте этот метод !!!
-  // O(n logn)
   private List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = PersonService.findPersons(personIds);
-    return  persons.stream()
-            .sorted(Comparator.comparing(Person::getId))
+
+    Map<Integer, Person> IdsAndPersons = persons.stream()
+            .collect(Collectors.toMap(
+                    Person::getId,
+                    person -> person
+            ));
+
+  /*  Сортировка в том же порядке, что и переданные id
+    Сложность O(n*n*logn)   Поэтому... */
+   /* return  persons.stream()
+            .sorted(Comparator.comparing(person -> personIds.indexOf(person.getId())))
+            .collect(Collectors.toList());*/
+
+   /* Другой вариант без сортировки c использованием вспомогательной Map
+    сложность O(n)        */
+    return personIds.stream()
+            .map(IdsAndPersons::get)
             .collect(Collectors.toList());
   }
 
